@@ -84,6 +84,7 @@ public class BirdController : MonoBehaviour
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Pipe")
         {
             state = BirdState.Dead;
+            neuralNetwork.SetFitness(points);
         }
     }
 
@@ -136,5 +137,15 @@ public class BirdController : MonoBehaviour
         // min distance to bottom = -1.905 - 5
         // max distance to bottom = 1.822 + 2.75
         distanceToBottom = (distanceToBottom - (-1.905 - 5)) / ((1.822 + 2.75) - (-1.905 - 5));
+    }
+
+    public void AssignNeuralNetwork(NeuralNetwork network)
+    {
+        neuralNetwork = network;
+    }
+
+    public bool IsAlive()
+    {
+        return state == BirdState.Alive;
     }
 }

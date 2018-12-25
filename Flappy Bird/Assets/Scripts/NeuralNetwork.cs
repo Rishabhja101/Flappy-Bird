@@ -6,27 +6,32 @@ using System.Threading.Tasks;
 
 namespace NeuralNetworks
 {
-    class NeuralNetwork
+    public class NeuralNetwork
     {
+        public static Random rand;
+
         private double[,] inputLayer;
         private double[] hiddenLayer;
+
+        private int fitness;
 
         // Creates a new Neural Network object with randomazied weights
         public NeuralNetwork()
         {
-            Random rand = new Random();
+            fitness = 0;
+            NeuralNetwork.rand = new Random();
             this.inputLayer = new double[4,3];
             this.hiddenLayer = new double[3];
             for (int i = 0; i < this.inputLayer.GetLength(0); i++)
             {
                 for (int n = 0; n < this.inputLayer.GetLength(1); n++)
                 {
-                    this.inputLayer[i, n] = rand.NextDouble();
+                    this.inputLayer[i, n] = NeuralNetwork.rand.NextDouble();
                 }
             }
             for (int i = 0; i < this.hiddenLayer.Length; i++)
             {
-                this.hiddenLayer[i] = rand.NextDouble();
+                this.hiddenLayer[i] = NeuralNetwork.rand.NextDouble();
             }
         }
 
@@ -64,6 +69,7 @@ namespace NeuralNetworks
 
         public NeuralNetwork Clone()
         {
+            fitness = 0;
             NeuralNetwork clone = new NeuralNetwork();
             for (int i = 0; i < clone.inputLayer.GetLength(0); i++)
             {
@@ -87,19 +93,31 @@ namespace NeuralNetworks
             {
                 for (int n = 0; n < this.inputLayer.GetLength(1); n++)
                 {
-                    if (rand.Next(100) < chance)
+                    if (NeuralNetwork.rand.Next(100) < chance)
                     {
-                        this.inputLayer[i, n] = rand.NextDouble();
+                        this.inputLayer[i, n] = NeuralNetwork.rand.NextDouble();
                     }
                 }
             }
             for (int i = 0; i < this.hiddenLayer.Length; i++)
             {
-                if (rand.Next(100) < chance)
+                if (NeuralNetwork.rand.Next(100) < chance)
                 {
-                    this.hiddenLayer[i] = rand.NextDouble();
+                    this.hiddenLayer[i] = NeuralNetwork.rand.NextDouble();
                 }
             }
+        }
+
+        // Returns the fitness value
+        public int GetFitness()
+        {
+            return this.fitness;
+        }
+
+        // Sets the fitness value
+        public void SetFitness(int fitness)
+        {
+            this.fitness = fitness;
         }
     }
 }
