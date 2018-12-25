@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BirdState { Alive, Dead}
+
 public class BirdController : MonoBehaviour
 {
     [SerializeField]
@@ -15,31 +17,45 @@ public class BirdController : MonoBehaviour
 
     private float velocity;
 
+    private BirdState state;
+
     // Start is called before the first frame update
     void Start()
     {
         velocity = -fallSpeed;
+        state = BirdState.Alive;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.anyKeyDown)
+        if (state == BirdState.Alive)
         {
-            velocity += thrust;
-            if (velocity > fallSpeed)
+            if (Input.anyKeyDown)
             {
-                velocity = fallSpeed;
+                velocity += thrust;
+                if (velocity > fallSpeed)
+                {
+                    velocity = fallSpeed;
+                }
+            }
+            gameObject.transform.position = new Vector3(0, transform.position.y + velocity, 0);
+            if (velocity >= -fallSpeed)
+            {
+                velocity -= acceleration;
+            }
+            else
+            {
+                velocity = -fallSpeed;
             }
         }
-        gameObject.transform.position = new Vector3(0, transform.position.y + velocity, 0);
-        if (velocity >= -fallSpeed)
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Pipe")
         {
-            velocity -= acceleration;
-        }
-        else
-        {
-            velocity = -fallSpeed;
+            state = BirdState.Dead;
         }
     }
 }
