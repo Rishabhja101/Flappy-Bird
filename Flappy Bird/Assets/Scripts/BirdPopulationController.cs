@@ -18,12 +18,14 @@ public class BirdPopulationController : MonoBehaviour
     private void Start()
     {
         generation = 0;
+        neuralNetworks = new NeuralNetwork[10];
+        birds = new GameObject[10];
         NeuralNetwork.rand = new System.Random();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < neuralNetworks.Length; i++)
         {
             neuralNetworks[i] = new NeuralNetwork();
         }
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < birds.Length; i++)
         {
             birds[i] = Instantiate(bird, transform.position, Quaternion.identity, transform);
             birds[i].GetComponent<BirdController>().AssignNeuralNetwork(neuralNetworks[i]);
@@ -67,6 +69,7 @@ public class BirdPopulationController : MonoBehaviour
         {
             if (neuralNetworks[i].GetFitness() >= fitnesses[fitnesses.Length / 2])
             {
+                if (n < strongNerualNetworks.Length)
                 strongNerualNetworks[n] = neuralNetworks[i].Clone();
                 n++;
             }

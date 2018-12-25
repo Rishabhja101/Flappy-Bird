@@ -43,6 +43,8 @@ public class BirdController : MonoBehaviour
         velocity = -fallSpeed;
         state = BirdState.Alive;
         points = 0;
+        pipeManager = GameObject.Find("/PipeManager");
+        pointsDisplay = GameObject.Find("/Canvas/Text").GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -54,6 +56,7 @@ public class BirdController : MonoBehaviour
         {
             //if (Input.anyKeyDown)     // commented out to restrit user from controlling bird
             double[] inputs = new double[] { formattedVelocity, distanceToPipe, distanceToTop, distanceToBottom};
+            print(neuralNetwork.SumLayers(inputs) + ", " + velocity + ", " + formattedVelocity);
             if (neuralNetwork.CalculateNextMove(inputs))
             {
                 velocity += thrust;
@@ -94,7 +97,10 @@ public class BirdController : MonoBehaviour
         if (collision.gameObject.tag == "Goal" && state == BirdState.Alive)
         {
             points++;
-            pointsDisplay.text = points.ToString();
+            if (int.Parse(pointsDisplay.text) < points)
+            {
+                pointsDisplay.text = points.ToString();
+            }
         }
     }
 

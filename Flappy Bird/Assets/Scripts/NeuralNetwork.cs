@@ -36,7 +36,7 @@ namespace NeuralNetworks
         }
 
         // calculates the output of the Neural Network given the inputs
-        private double SumLayers(double[] input)
+        public double SumLayers(double[] input)
         {
             double[] hiddenLayerSums = new double[this.hiddenLayer.Length];
             for(int i = 0; i < hiddenLayerSums.Length; i++)
@@ -64,7 +64,7 @@ namespace NeuralNetworks
         public bool CalculateNextMove(double[] input)
         {
             double output = SumLayers(input);
-            return output > 0.5;
+            return output > 0.8;
         }
 
         public NeuralNetwork Clone()
