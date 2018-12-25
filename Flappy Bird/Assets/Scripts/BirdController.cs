@@ -46,6 +46,7 @@ public class BirdController : MonoBehaviour
     private void Update()
     {
         GetNeuralNetworkInputs();
+        FormatNerualNetworkInputs();
         if (state == BirdState.Alive)
         {
             if (Input.anyKeyDown)
@@ -108,12 +109,10 @@ public class BirdController : MonoBehaviour
             distanceToPipe = closest.position.x - transform.position.x;
             distanceToTop = GameObject.Find("/PipeManager/Pipe/Pipe_Top/Top").transform.position.y - transform.position.y;
             distanceToBottom = GameObject.Find("/PipeManager/Pipe/Pipe_Bottom/Bottom").transform.position.y - transform.position.y;
-            FormatNerualNetworkInputs();
-            print(string.Format("{0}, {1}, {2}, {3}", distanceToPipe, distanceToTop, distanceToBottom, formattedVelocity));
         }
         catch
         {
-            print(formattedVelocity);
+
         }
     }
 
