@@ -20,7 +20,8 @@ public class BirdPopulationController : MonoBehaviour
 
     private int generation;
 
-    const int populationSize = 100;
+    const int populationSize = 50;
+    const int retained = 5;
 
     // Start is called before the first frame update
     private void Start()
@@ -48,7 +49,6 @@ public class BirdPopulationController : MonoBehaviour
         {
             generation++;
             GenerateNewGeneration();
-            print("all dead");
             gameController.GetComponent<GameController>().Reset();
             generationDisplay.text = generation.ToString();
         }
@@ -75,11 +75,11 @@ public class BirdPopulationController : MonoBehaviour
     // breeds the next generation of neural networks
     private void BreedNeuralNetworks(int[] fitnesses)
     {
-        NeuralNetwork[] strongNerualNetworks = new NeuralNetwork[neuralNetworks.Length / 3];
+        NeuralNetwork[] strongNerualNetworks = new NeuralNetwork[neuralNetworks.Length / retained];
         int n = 0;
         for (int i = 0; i < fitnesses.Length; i++)
         {
-            if (neuralNetworks[i].GetFitness() >= fitnesses[fitnesses.Length / 3])
+            if (neuralNetworks[i].GetFitness() >= fitnesses[fitnesses.Length / retained])
             {
                 if (n < strongNerualNetworks.Length)
                 strongNerualNetworks[n] = neuralNetworks[i].Clone();
@@ -108,7 +108,7 @@ public class BirdPopulationController : MonoBehaviour
         }
         for (int  i = 1; i < neuralNetworks.Length; i++)
         {
-            neuralNetworks[i].Mutate(10);
+            neuralNetworks[i].Mutate(5);
         }
     }
 

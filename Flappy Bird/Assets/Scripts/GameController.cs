@@ -58,8 +58,6 @@ public class GameController : MonoBehaviour
         float y = Random.Range((float)0.77, (float)4.496);
         GameObject newPipe = Instantiate(pipe, new Vector3((float)3.25, y, 0), Quaternion.identity, pipeManager.transform);
         newPipe.name = pipe.name;
-
-        print("reset: " + reset.ToString());
         if (!reset)
         {
             Invoke("PlacePipe", speed * 40);

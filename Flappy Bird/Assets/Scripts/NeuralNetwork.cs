@@ -64,7 +64,7 @@ namespace NeuralNetworks
         public bool CalculateNextMove(double[] input)
         {
             double output = SumLayers(input);
-            return output > 0.8;
+            return output > 0.6;
         }
 
         public NeuralNetwork Clone()
@@ -117,6 +117,7 @@ namespace NeuralNetworks
         // Sets the fitness value
         public void SetFitness(int points, double distance)
         {
+            //this.fitness += points * 1000;
             this.fitness += points * 1000 + int.Parse(Math.Round((1 - distance) * 100, 0, MidpointRounding.AwayFromZero).ToString());
         }
 

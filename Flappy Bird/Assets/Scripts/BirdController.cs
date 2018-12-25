@@ -32,6 +32,7 @@ public class BirdController : MonoBehaviour
     private double distanceToTop;
     private double distanceToBottom;
     private double rawDistanceToPipe;
+    private double distanceToPipeCenter;
 
     private BirdState state;
     private int points;
@@ -88,8 +89,7 @@ public class BirdController : MonoBehaviour
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Pipe")
         {
             state = BirdState.Dead;
-            neuralNetwork.SetFitness(points, distanceToPipe);
-            print(neuralNetwork.GetFitness());
+            neuralNetwork.SetFitness(points, distanceToPipeCenter);
         }
     }
 
@@ -125,6 +125,7 @@ public class BirdController : MonoBehaviour
             rawDistanceToPipe = closest.position.x - transform.position.x;
             distanceToTop = closest.transform.Find("Pipe_Top/Top").transform.position.y - transform.position.y;
             distanceToBottom = closest.transform.Find("Pipe_Bottom/Bottom").transform.position.y - transform.position.y;
+            distanceToPipeCenter = (closest.transform.Find("Center").transform.position - transform.position).magnitude;
         }
         catch
         {
@@ -147,6 +148,9 @@ public class BirdController : MonoBehaviour
         // min distance to bottom = -1.905 - 5
         // max distance to bottom = 1.822 + 2.75
         distanceToBottom = (distanceToBottom - (-1.905 - 5)) / ((1.822 + 2.75) - (-1.905 - 5));
+        // min distance to center = 0
+        // max distance to center = ~ 4.5
+        distanceToPipeCenter = distanceToPipeCenter / 4.5;
     }
 
     public void AssignNeuralNetwork(NeuralNetwork network)
