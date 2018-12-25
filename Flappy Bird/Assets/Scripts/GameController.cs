@@ -25,7 +25,6 @@ public class GameController : MonoBehaviour
     // places the pipes
     private void PlacePipe()
     {
-        print("sadfasd");
         // max height = 4.496
         // min height = 0.77
         float y = Random.Range((float)0.77, (float)4.496);
