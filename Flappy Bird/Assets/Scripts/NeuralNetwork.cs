@@ -10,12 +10,13 @@ namespace NeuralNetworks
     {
         private double[,] inputLayer;
         private double[] hiddenLayer;
-        private double outputLayer;
 
         // Creates a new Neural Network object with randomazied weights
         public NeuralNetwork()
         {
             Random rand = new Random();
+            this.inputLayer = new double[4,3];
+            this.hiddenLayer = new double[3];
             for (int i = 0; i < this.inputLayer.GetLength(0); i++)
             {
                 for (int n = 0; n < this.inputLayer.GetLength(1); n++)
@@ -30,7 +31,7 @@ namespace NeuralNetworks
         }
 
         // calculates the output of the Neural Network given the inputs
-        public double SumLayers(double[] input)
+        private double SumLayers(double[] input)
         {
             double[] hiddenLayerSums = new double[this.hiddenLayer.Length];
             for(int i = 0; i < hiddenLayerSums.Length; i++)
@@ -50,7 +51,7 @@ namespace NeuralNetworks
             return Sigmoid(outputSum);
         }
         
-        public double Sigmoid(double raw)
+        private double Sigmoid(double raw)
         {
             return 1 / (1 + Math.Pow(Math.E, -raw));
         }

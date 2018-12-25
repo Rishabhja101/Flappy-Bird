@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using NeuralNetworks;
 
 public enum BirdState { Alive, Dead}
 
@@ -34,6 +35,8 @@ public class BirdController : MonoBehaviour
     private BirdState state;
     private int points;
 
+    private NeuralNetwork neuralNetwork;
+    
     // Start is called before the first frame update
     private void Start()
     {
@@ -49,7 +52,9 @@ public class BirdController : MonoBehaviour
         FormatNerualNetworkInputs();
         if (state == BirdState.Alive)
         {
-            if (Input.anyKeyDown)
+            //if (Input.anyKeyDown)     // commented out to restrit user from controlling bird
+            double[] inputs = new double[] { formattedVelocity, distanceToPipe, distanceToTop, distanceToBottom};
+            if (neuralNetwork.CalculateNextMove(inputs))
             {
                 velocity += thrust;
                 if (velocity > fallSpeed)
