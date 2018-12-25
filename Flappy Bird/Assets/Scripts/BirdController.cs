@@ -22,14 +22,20 @@ public class BirdController : MonoBehaviour
     [SerializeField]
     private Text pointsDisplay;
 
-    private float velocity;
+    [SerializeField]
+    private GameObject pipeManager;
+
+    private double velocity;
+    private double formattedVelocity;
+    private double distanceToPipe;
+    private double distanceToTop;
+    private double distanceToBottom;
 
     private BirdState state;
-
     private int points;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         velocity = -fallSpeed;
         state = BirdState.Alive;
@@ -37,8 +43,9 @@ public class BirdController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        GetNeuralNetworkInputs();
         if (state == BirdState.Alive)
         {
             if (Input.anyKeyDown)
@@ -49,12 +56,12 @@ public class BirdController : MonoBehaviour
                     velocity = fallSpeed;
                 }
             }
-            gameObject.transform.position = new Vector3(0, transform.position.y + velocity, 0);
+            gameObject.transform.position = new Vector3(0, transform.position.y + (float)velocity, 0);
             if (velocity >= -fallSpeed)
             {
                 velocity -= acceleration;
             }
-            else
+            if (velocity < -fallSpeed)
             {
                 velocity = -fallSpeed;
             }
@@ -65,6 +72,7 @@ public class BirdController : MonoBehaviour
         }
     }
     
+    // Called when a collider is triggered
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Pipe")
@@ -73,6 +81,7 @@ public class BirdController : MonoBehaviour
         }
     }
 
+    // Called when a collider has stopped being triggered
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Goal" && state == BirdState.Alive)
@@ -80,5 +89,48 @@ public class BirdController : MonoBehaviour
             points++;
             pointsDisplay.text = points.ToString();
         }
+    }
+
+    // Gets the Neural Network Inputs for the bird
+    private void GetNeuralNetworkInputs()
+    {
+        Transform[] pipes = pipeManager.GetComponentsInChildren<Transform>();
+        Transform closest = pipes[0];
+        for (int i = 0; i < pipes.Length; i++)
+        {
+            if (pipes[i].position.x > transform.position.x && pipes[i].position.x - transform.position.x < closest.position.x - transform.position.x)
+            {
+                closest = pipes[i];
+            }
+        }
+        try
+        {
+            distanceToPipe = closest.position.x - transform.position.x;
+            distanceToTop = GameObject.Find("/PipeManager/Pipe/Pipe_Top/Top").transform.position.y - transform.position.y;
+            distanceToBottom = GameObject.Find("/PipeManager/Pipe/Pipe_Bottom/Bottom").transform.position.y - transform.position.y;
+            FormatNerualNetworkInputs();
+            print(string.Format("{0}, {1}, {2}, {3}", distanceToPipe, distanceToTop, distanceToBottom, formattedVelocity));
+        }
+        catch
+        {
+            print(formattedVelocity);
+        }
+    }
+
+    // Formats the Neural Network Inputs
+    private void FormatNerualNetworkInputs()
+    {
+        // min velocity = -fallspeed
+        // max velocity = fallspeed
+        formattedVelocity = (velocity - -fallSpeed) / (2 * fallSpeed);
+        // min distance to pipe = 0
+        // max distance to pipe = 3.25
+        distanceToPipe = distanceToPipe / 3.25;
+        // min distance to top = -0.246 - 5
+        // max distance to top = 3.48 + 2.75
+        distanceToTop = (distanceToTop - (-0.246 - 5)) / ((3.48 + 2.75) - (-0.246 - 5));
+        // min distance to bottom = -1.905 - 5
+        // max distance to bottom = 1.822 + 2.75
+        distanceToBottom = (distanceToBottom - (-1.905 - 5)) / ((1.822 + 2.75) - (-1.905 - 5));
     }
 }
