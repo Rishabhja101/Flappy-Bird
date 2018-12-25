@@ -115,9 +115,9 @@ namespace NeuralNetworks
         }
 
         // Sets the fitness value
-        public void SetFitness(int fitness)
+        public void SetFitness(int points, double distance)
         {
-            this.fitness = fitness;
+            this.fitness = points * 1000 + int.Parse(Math.Round((1 - distance) * 100, 0, MidpointRounding.AwayFromZero).ToString());
         }
     }
 }

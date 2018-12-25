@@ -31,6 +31,7 @@ public class BirdController : MonoBehaviour
     private double distanceToPipe;
     private double distanceToTop;
     private double distanceToBottom;
+    private double rawDistanceToPipe;
 
     private BirdState state;
     private int points;
@@ -56,7 +57,6 @@ public class BirdController : MonoBehaviour
         {
             //if (Input.anyKeyDown)     // commented out to restrit user from controlling bird
             double[] inputs = new double[] { formattedVelocity, distanceToPipe, distanceToTop, distanceToBottom};
-            print(neuralNetwork.SumLayers(inputs) + ", " + velocity + ", " + formattedVelocity);
             if (neuralNetwork.CalculateNextMove(inputs))
             {
                 velocity += thrust;
@@ -87,7 +87,8 @@ public class BirdController : MonoBehaviour
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Pipe")
         {
             state = BirdState.Dead;
-            neuralNetwork.SetFitness(points);
+            neuralNetwork.SetFitness(points, distanceToPipe);
+            print(neuralNetwork.GetFitness());
         }
     }
 
@@ -97,10 +98,10 @@ public class BirdController : MonoBehaviour
         if (collision.gameObject.tag == "Goal" && state == BirdState.Alive)
         {
             points++;
-            if (int.Parse(pointsDisplay.text) < points)
-            {
-                pointsDisplay.text = points.ToString();
-            }
+            //if (int.Parse(pointsDisplay.text) < points)
+            //{
+            //    pointsDisplay.text = points.ToString();
+            //}
         }
     }
 
@@ -109,18 +110,20 @@ public class BirdController : MonoBehaviour
     {
         Transform[] pipes = pipeManager.GetComponentsInChildren<Transform>();
         Transform closest = pipes[0];
+        double closestX = int.MaxValue;
         for (int i = 0; i < pipes.Length; i++)
         {
-            if (pipes[i].position.x > transform.position.x && pipes[i].position.x - transform.position.x < closest.position.x - transform.position.x)
+            if (pipes[i].name == "Pipe" && pipes[i].position.x > transform.position.x && pipes[i].position.x - transform.position.x < closestX - transform.position.x)
             {
                 closest = pipes[i];
+                closestX = pipes[i].position.x;
             }
         }
         try
         {
-            distanceToPipe = closest.position.x - transform.position.x;
-            distanceToTop = GameObject.Find("/PipeManager/Pipe/Pipe_Top/Top").transform.position.y - transform.position.y;
-            distanceToBottom = GameObject.Find("/PipeManager/Pipe/Pipe_Bottom/Bottom").transform.position.y - transform.position.y;
+            rawDistanceToPipe = closest.position.x - transform.position.x;
+            distanceToTop = closest.transform.Find("Pipe_Top/Top").transform.position.y - transform.position.y;
+            distanceToBottom = closest.transform.Find("Pipe_Bottom/Bottom").transform.position.y - transform.position.y;
         }
         catch
         {
@@ -136,7 +139,7 @@ public class BirdController : MonoBehaviour
         formattedVelocity = (velocity - -fallSpeed) / (2 * fallSpeed);
         // min distance to pipe = 0
         // max distance to pipe = 3.25
-        distanceToPipe = distanceToPipe / 3.25;
+        distanceToPipe = rawDistanceToPipe / 3.25;
         // min distance to top = -0.246 - 5
         // max distance to top = 3.48 + 2.75
         distanceToTop = (distanceToTop - (-0.246 - 5)) / ((3.48 + 2.75) - (-0.246 - 5));

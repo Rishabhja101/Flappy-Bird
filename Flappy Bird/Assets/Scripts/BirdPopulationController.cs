@@ -9,21 +9,30 @@ public class BirdPopulationController : MonoBehaviour
     [SerializeField]
     private GameObject bird;
 
+    [SerializeField]
+    private GameObject gameController;
+
+    [SerializeField]
+    private Text generationDisplay;
+
     private NeuralNetwork[] neuralNetworks;
     private GameObject[] birds;
 
     private int generation;
 
+    const int populationSize = 100;
+
     // Start is called before the first frame update
     private void Start()
     {
         generation = 0;
-        neuralNetworks = new NeuralNetwork[10];
-        birds = new GameObject[10];
+        neuralNetworks = new NeuralNetwork[populationSize];
+        birds = new GameObject[populationSize];
         NeuralNetwork.rand = new System.Random();
         for (int i = 0; i < neuralNetworks.Length; i++)
         {
             neuralNetworks[i] = new NeuralNetwork();
+            neuralNetworks[i].Mutate(100);
         }
         for (int i = 0; i < birds.Length; i++)
         {
@@ -39,6 +48,9 @@ public class BirdPopulationController : MonoBehaviour
         {
             generation++;
             GenerateNewGeneration();
+            print("all dead");
+            gameController.GetComponent<GameController>().Reset();
+            generationDisplay.text = generation.ToString();
         }
     }
 
@@ -67,7 +79,7 @@ public class BirdPopulationController : MonoBehaviour
         int n = 0;
         for (int i = 0; i < fitnesses.Length; i++)
         {
-            if (neuralNetworks[i].GetFitness() >= fitnesses[fitnesses.Length / 2])
+            if (neuralNetworks[i].GetFitness() > fitnesses[fitnesses.Length / 2])
             {
                 if (n < strongNerualNetworks.Length)
                 strongNerualNetworks[n] = neuralNetworks[i].Clone();

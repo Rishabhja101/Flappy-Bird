@@ -13,16 +13,41 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject pipeManager;
 
+    private bool reset;
+
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("PlacePipe", 5);
+        reset = false;
+        PlacePipe();
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    // Resets the pipes
+    public void Reset()
+    {
+        float y = Random.Range((float)0.77, (float)4.496);
+        GameObject newPipe = Instantiate(pipe, new Vector3((float)3.25, y, 0), Quaternion.identity, pipeManager.transform);
+        newPipe.name = pipe.name + "reset";
+
+        Transform[] pipes = pipeManager.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < pipes.Length; i++)
+        {
+            if (pipes[i].name == pipe.name)   
+            {
+                Destroy(pipes[i].gameObject);
+            }
+        }
+        newPipe.name = pipe.name;
+        reset = true;
+
+
+        //Invoke("PlacePipe", speed * 40);
     }
 
     // places the pipes
@@ -34,6 +59,11 @@ public class GameController : MonoBehaviour
         GameObject newPipe = Instantiate(pipe, new Vector3((float)3.25, y, 0), Quaternion.identity, pipeManager.transform);
         newPipe.name = pipe.name;
 
-        Invoke("PlacePipe", speed * 40);
+        print("reset: " + reset.ToString());
+        if (!reset)
+        {
+            Invoke("PlacePipe", speed * 40);
+        }
+        reset = false;
     }
 }
