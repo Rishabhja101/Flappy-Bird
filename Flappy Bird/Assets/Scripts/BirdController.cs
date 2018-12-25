@@ -74,6 +74,7 @@ public class BirdController : MonoBehaviour
             {
                 velocity = -fallSpeed;
             }
+            neuralNetwork.AddFitness(1);
         }
         else if(state == BirdState.Dead && transform.position.x > -3.7)
         {

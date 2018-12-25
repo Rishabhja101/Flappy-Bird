@@ -75,23 +75,38 @@ public class BirdPopulationController : MonoBehaviour
     // breeds the next generation of neural networks
     private void BreedNeuralNetworks(int[] fitnesses)
     {
-        NeuralNetwork[] strongNerualNetworks = new NeuralNetwork[neuralNetworks.Length / 2];
+        NeuralNetwork[] strongNerualNetworks = new NeuralNetwork[neuralNetworks.Length / 3];
         int n = 0;
         for (int i = 0; i < fitnesses.Length; i++)
         {
-            if (neuralNetworks[i].GetFitness() > fitnesses[fitnesses.Length / 2])
+            if (neuralNetworks[i].GetFitness() >= fitnesses[fitnesses.Length / 3])
             {
                 if (n < strongNerualNetworks.Length)
                 strongNerualNetworks[n] = neuralNetworks[i].Clone();
                 n++;
             }
         }
+        List<NeuralNetwork> newNetworks = new List<NeuralNetwork>();
+        foreach(NeuralNetwork net in neuralNetworks)
+        {
+            if(net.GetFitness() == fitnesses[0])
+            {
+                newNetworks.Add(net.Clone());
+            }
+        }
         for (int i = 0; i < strongNerualNetworks.Length; i++)
         {
-            neuralNetworks[i] = strongNerualNetworks[i].Clone();
-            neuralNetworks[neuralNetworks.Length - 1 - i] = strongNerualNetworks[i].Clone();
+            newNetworks.Add(strongNerualNetworks[i].Clone());
         }
-        for (int  i = 0; i < neuralNetworks.Length; i++)
+        while (newNetworks.Count < neuralNetworks.Length)
+        {
+            newNetworks.Add(strongNerualNetworks[NeuralNetwork.rand.Next(0, strongNerualNetworks.Length)].Clone());
+        }
+        for (int i = 0; i < neuralNetworks.Length; i++)
+        {
+            neuralNetworks[i] = newNetworks[i].Clone();
+        }
+        for (int  i = 1; i < neuralNetworks.Length; i++)
         {
             neuralNetworks[i].Mutate(10);
         }
