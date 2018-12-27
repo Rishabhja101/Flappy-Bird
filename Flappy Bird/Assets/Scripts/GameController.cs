@@ -12,13 +12,19 @@ public class GameController : MonoBehaviour
 
     [SerializeField]
     private GameObject pipeManager;
-
+    
     private bool reset;
 
     // Start is called before the first frame update
     void Start()
     {
+        Random.seed = 1;
         reset = false;
+
+        float y = Random.Range((float)0.77, (float)4.496);
+        GameObject newPipe = Instantiate(pipe, new Vector3((float)3.25, y, 0), Quaternion.identity, pipeManager.transform);
+        newPipe.name = pipe.name;
+        newPipe.GetComponent<PipeController>().SetIsActive(false);
         PlacePipe();
     }
 
@@ -31,21 +37,26 @@ public class GameController : MonoBehaviour
     // Resets the pipes
     public void Reset()
     {
-        float y = Random.Range((float)0.77, (float)4.496);
-        GameObject newPipe = Instantiate(pipe, new Vector3((float)3.25, y, 0), Quaternion.identity, pipeManager.transform);
-        newPipe.name = pipe.name + "reset";
+
+        //float y = Random.Range((float)0.77, (float)4.496);
+        //GameObject newPipe = Instantiate(pipe, new Vector3((float)3.25, y, 0), Quaternion.identity, pipeManager.transform);
+        //newPipe.name = pipe.name + "reset";
 
         Transform[] pipes = pipeManager.GetComponentsInChildren<Transform>();
         for (int i = 0; i < pipes.Length; i++)
         {
-            if (pipes[i].name == pipe.name)   
+            if (pipes[i].name == pipe.name)
             {
                 Destroy(pipes[i].gameObject);
             }
         }
-        newPipe.name = pipe.name;
+        //newPipe.name = pipe.name;
         reset = true;
 
+        print("reset");
+        GameObject newGameController = Instantiate(gameObject, transform.parent);
+        newGameController.name = gameObject.name;
+        Destroy(gameObject);
 
         //Invoke("PlacePipe", speed * 40);
     }

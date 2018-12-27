@@ -19,10 +19,7 @@ public class BirdController : MonoBehaviour
 
     [SerializeField]
     private float speed;
-
-    [SerializeField]
-    private Text pointsDisplay;
-
+    
     [SerializeField]
     private GameObject pipeManager;
 
@@ -33,6 +30,7 @@ public class BirdController : MonoBehaviour
     private double distanceToBottom;
     private double rawDistanceToPipe;
     private double distanceToPipeCenter;
+    private double distanceAboveGround;
 
     private BirdState state;
     private int points;
@@ -46,7 +44,6 @@ public class BirdController : MonoBehaviour
         state = BirdState.Alive;
         points = 0;
         pipeManager = GameObject.Find("/PipeManager");
-        pointsDisplay = GameObject.Find("/Canvas/Text").GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -56,8 +53,8 @@ public class BirdController : MonoBehaviour
         FormatNerualNetworkInputs();
         if (state == BirdState.Alive)
         {
+            double[] inputs = new double[] { formattedVelocity, distanceToPipe, distanceToTop, distanceToBottom, distanceAboveGround };
             //if (Input.anyKeyDown)     // commented out to restrit user from controlling bird
-            double[] inputs = new double[] { formattedVelocity, distanceToPipe, distanceToTop, distanceToBottom};
             if (neuralNetwork.CalculateNextMove(inputs))
             {
                 velocity += thrust;
@@ -86,6 +83,7 @@ public class BirdController : MonoBehaviour
     // Called when a collider is triggered
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //if (collision.gameObject.tag == "Ground")
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Pipe")
         {
             state = BirdState.Dead;
@@ -126,6 +124,7 @@ public class BirdController : MonoBehaviour
             distanceToTop = closest.transform.Find("Pipe_Top/Top").transform.position.y - transform.position.y;
             distanceToBottom = closest.transform.Find("Pipe_Bottom/Bottom").transform.position.y - transform.position.y;
             distanceToPipeCenter = (closest.transform.Find("Center").transform.position - transform.position).magnitude;
+            distanceAboveGround = transform.position.y + 2.8;
         }
         catch
         {
@@ -151,6 +150,9 @@ public class BirdController : MonoBehaviour
         // min distance to center = 0
         // max distance to center = ~ 4.5
         distanceToPipeCenter = distanceToPipeCenter / 4.5;
+        // min distance above ground = 0;
+        // max distance above ground = 8.7
+        distanceAboveGround = distanceAboveGround / 8.7;
     }
 
     public void AssignNeuralNetwork(NeuralNetwork network)

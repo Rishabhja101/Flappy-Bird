@@ -8,8 +8,7 @@ public class BirdPopulationController : MonoBehaviour
 {
     [SerializeField]
     private GameObject bird;
-
-    [SerializeField]
+    
     private GameObject gameController;
 
     [SerializeField]
@@ -20,12 +19,16 @@ public class BirdPopulationController : MonoBehaviour
 
     private int generation;
 
-    const int populationSize = 50;
-    const int retained = 5;
+    [SerializeField]
+    private int populationSize = 100;
+
+    [SerializeField]
+    private int retained = 5;
 
     // Start is called before the first frame update
     private void Start()
     {
+        gameController = GameObject.Find("/GameController");
         generation = 0;
         neuralNetworks = new NeuralNetwork[populationSize];
         birds = new GameObject[populationSize];
@@ -49,6 +52,7 @@ public class BirdPopulationController : MonoBehaviour
         {
             generation++;
             GenerateNewGeneration();
+            gameController = GameObject.Find("/GameController");
             gameController.GetComponent<GameController>().Reset();
             generationDisplay.text = generation.ToString();
         }

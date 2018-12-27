@@ -20,7 +20,7 @@ namespace NeuralNetworks
         {
             fitness = 0;
             NeuralNetwork.rand = new Random();
-            this.inputLayer = new double[4,3];
+            this.inputLayer = new double[5,3];
             this.hiddenLayer = new double[3];
             for (int i = 0; i < this.inputLayer.GetLength(0); i++)
             {
