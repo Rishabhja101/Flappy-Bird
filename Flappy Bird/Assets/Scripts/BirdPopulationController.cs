@@ -20,7 +20,7 @@ public class BirdPopulationController : MonoBehaviour
     private int generation;
 
     [SerializeField]
-    private int populationSize = 100;
+    private int populationSize = 50;
 
     [SerializeField]
     private int retained = 5;

@@ -146,7 +146,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 158}
+  m_AnchoredPosition: {x: 0, y: 323}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &81029542
@@ -370,7 +370,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bird: {fileID: 2236452021853816804, guid: f37792b4dde92e8488c504095cdb1a4b, type: 3}
   generationDisplay: {fileID: 81029542}
-  populationSize: 50
+  populationSize: 10
   retained: 5
 --- !u!4 &632268544
 Transform:
